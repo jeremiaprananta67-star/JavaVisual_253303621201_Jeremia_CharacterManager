@@ -1,14 +1,15 @@
-# Character Manager — TP3 (Java Visual SIH-6406)
+## AP3 - Character Manager (Java Visual SIH-6406)
+Aplikasi ini adalah sistem manajemen karakter sederhana berbasis teks (Console-based Game Character Manager) yang dibangun menggunakan bahasa pemrograman Java. Proyek ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP), khususnya enkapsulasi (Encapsulation) dengan pembatasan hak akses atribut menggunakan setter, getter, serta fungsi validasi nilai logika. Sistem juga mendukung kalkulasi otomatis status karakter (HP dan Attack) berdasarkan level serta fitur pelacakan kondisi hidup/mati karakter.
 
-Proyek ini membangun aplikasi Character Manager sederhana menggunakan Java untuk memodelkan karakter game. Implementasi mencakup enum jenis karakter, class `Character` dengan encapsulation, validasi mana, status hidup, serta demo pembuatan karakter dan level up.
+### Screenshot Output Terminal ap3
+Struktur Folder Project
 
-## Screenshot Output Terminal
-
-Screenshot terminal menampilkan output program, termasuk hasil pemanggilan `isAlive()`.
+Screenshot ini mendokumentasikan demo sebelumnya yang menampilkan hasil `isAlive()`. `Main.java` sekarang menjalankan demo CRUD v0.2.
 
 ![Screenshot output terminal Character Manager](./Bukti_Tp_3.png)
 
 ## Struktur Project
+
 
 ```text
 CharacterMaager_/
@@ -19,10 +20,19 @@ CharacterMaager_/
 │           └── charactermanager/
 │               └── model/
 │                   ├── Character.java
+│                   ├── CharacterManager.java
 │                   └── CharacterType.java
-├── Bukti_tp_3.png
+├── Bukti_Tp_3.png
 └── README.md
-```
+
+## AP6 - Fitur Baru: Pencarian Karakter Terkuat (findStrongest)
+1. Rasional / Alasan Fitur
+Dalam pengembangan sebuah game atau sistem RPG, mengetahui entitas atau karakter mana yang memiliki statistik tertinggi (terkuat) merupakan fitur analisis data yang sangat krusial. Fitur findStrongest() ditambahkan untuk mempermudah sistem dalam menyaring karakter dengan daya serang (attackPower) paling mendominasi tanpa mengharuskan layer aplikasi melakukan pengurutan (sorting) manual di sisi luar.
+
+2. Menjaga Prinsip OOP & Enkapsulasi
+Defensive Design: Method mengembalikan satu objek Character tunggal atau nilai null apabila sistem belum memiliki data karakter sama sekali.
+No Information Leakage: Struktur data internal ArrayList<Character> characterList milik CharacterManager tetap terkunci rapat di dalam class (private). Akses luar murni hanya mendapatkan hasil kalkulasi/pencarian objek spesifik tanpa diberi celah untuk memodifikasi atau menambah isi list secara ilegal.
+### Screenshot Output Terminal ap6
 
 ## Identitas
 
