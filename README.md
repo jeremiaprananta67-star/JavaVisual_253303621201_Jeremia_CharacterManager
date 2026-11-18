@@ -23,6 +23,7 @@ CharacterMaager_/
 │                   ├── CharacterManager.java
 │                   └── CharacterType.java
 ├── Bukti_Tp_3.png
+│── Bukti_Tp_6.png
 └── README.md
 
 ## AP6 - Fitur Baru: Pencarian Karakter Terkuat (findStrongest)
@@ -33,6 +34,8 @@ Dalam pengembangan sebuah game atau sistem RPG, mengetahui entitas atau karakter
 Defensive Design: Method mengembalikan satu objek Character tunggal atau nilai null apabila sistem belum memiliki data karakter sama sekali.
 No Information Leakage: Struktur data internal ArrayList<Character> characterList milik CharacterManager tetap terkunci rapat di dalam class (private). Akses luar murni hanya mendapatkan hasil kalkulasi/pencarian objek spesifik tanpa diberi celah untuk memodifikasi atau menambah isi list secara ilegal.
 ### Screenshot Output Terminal ap6
+<img width="1920" height="1080" alt="Screenshot (46)" src="https://github.com/user-attachments/assets/21eeacba-cee3-4078-af9c-ed03e2d92a50" />
+
 
 ## Identitas
 
