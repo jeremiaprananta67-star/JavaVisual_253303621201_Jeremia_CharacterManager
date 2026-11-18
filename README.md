@@ -33,9 +33,11 @@ Defensive Design: Method mengembalikan satu objek Character tunggal atau nilai n
 No Information Leakage: Struktur data internal ArrayList<Character> characterList milik CharacterManager tetap terkunci rapat di dalam class (private). Akses luar murni hanya mendapatkan hasil kalkulasi/pencarian objek spesifik tanpa diberi celah untuk memodifikasi atau menambah isi list secara ilegal.
 ### Screenshot Output Terminal ap6
 ![Bukti TP 5](./Bukti_tp_5.png)
+![Screenshot Output AP6](./Screenshot_AP6.png)
 
 ## Identitas
 
 - Nama: Jeremia Prannanta
 - NIM: 253303621201
 - Analisis Bagian D (Google Docs): tautan belum tersedia; tambahkan setelah dokumen dibuat.
+
