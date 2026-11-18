@@ -4,7 +4,7 @@ Aplikasi ini adalah sistem manajemen karakter sederhana berbasis teks (Console-b
 ### Screenshot Output Terminal ap3
 Screenshot ini mendokumentasikan demo sebelumnya yang menampilkan hasil `isAlive()`. `Main.java` sekarang menjalankan demo CRUD v0.2.
 
-![Screenshot output terminal Character Manager](./Bukti_Tp_3.png)
+![Screenshot output terminal Character Manager] ![Screenshot AP3](./Bukti_Ap_3.png)
 
 ## Struktur Project
 Struktur Folder Project
@@ -19,8 +19,8 @@ CharacterMaager_/
 │                   ├── Character.java
 │                   ├── CharacterManager.java
 │                   └── CharacterType.java
-├── Bukti_Tp_3.png
-│── Bukti_Tp_6.png
+├── Bukti_Ap_3.png
+│── Bukti_Ap_6.png
 └── README.md
 
 ## AP6 - Fitur Baru: Pencarian Karakter Terkuat (findStrongest)
@@ -32,12 +32,14 @@ Dalam pengembangan sebuah game atau sistem RPG, mengetahui entitas atau karakter
 Defensive Design: Method mengembalikan satu objek Character tunggal atau nilai null apabila sistem belum memiliki data karakter sama sekali.
 No Information Leakage: Struktur data internal ArrayList<Character> characterList milik CharacterManager tetap terkunci rapat di dalam class (private). Akses luar murni hanya mendapatkan hasil kalkulasi/pencarian objek spesifik tanpa diberi celah untuk memodifikasi atau menambah isi list secara ilegal.
 ### Screenshot Output Terminal ap6
-![Bukti TP 5](./Bukti_tp_5.png)
-![Screenshot Output AP6](./Screenshot_AP6.png)
+![Screenshot AP6](./Bukti_Ap_6.png)
 
-## Identitas
+## Identitas Mahasiswa
 
-- Nama: Jeremia Prannanta
-- NIM: 253303621201
-- Analisis Bagian D (Google Docs): tautan belum tersedia; tambahkan setelah dokumen dibuat.
+Nama: Jeremia Prananta
+NIM: 253303621201
+Link Google Docs ap3 :
+Link Google Docs ap6 :
+Link Google Docs ap10:
+Link Google Docs ap13:
 
