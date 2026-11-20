@@ -20,12 +20,14 @@ CharacterMaager_/
 │               │   │── CharacterType.java
 │               │   └── CharacterManager.java
 │               └── view/
-│                   └── MainWindow.java
-│                   
+│                   │── AppThema.java
+│                   └── MainWindow.java                  
 │              
 ├── Bukti_Ap_3.png
 │── Bukti_Ap_6.png
 ├── Bukti_Ap_10.png
+├── Bukti_Ap_13_sebelum.png
+├── Bukti_Ap_13_sebelum.png
 └── README.md
 
 ## AP6 - Fitur Baru: Pencarian Karakter Terkuat (findStrongest)
@@ -48,10 +50,34 @@ Dua karakter baru ditambahkan untuk memenuhi kebutuhan minimal lima karakter sek
 ### Screenshot Output Terminal ap10
 ![Screenshot AP10](./Bukti_Ap_10.png)
 
+### AP13 — Dokumentasi Pembaruan GUI & Manajemen Tema
+
+## 1. Rasionalisasi Pemisahan Data Warna (AppTheme vs Character)
+Penyimpanan data warna dikelola secara terpusat di dalam kelas `AppTheme` (atau `AppThema`) dan bukan di dalam kelas `Character` demi menjaga prinsip *Separation of Concerns* (Pemisahan Tanggung Jawab) pada arsitektur MVC. Kelas `Character` murni bertindak sebagai *Model* yang hanya bertanggung jawab atas logika data dan status internal karakter seperti nama, level, atau poin kesehatan. Jika warna dimasukkan ke dalam kelas `Character`, hal tersebut akan merusak enkapsulasi karena memaksa komponen *Model* untuk memahami elemen visual grafis yang merupakan ranah penuh dari komponen *View*. Dengan pendekatan ini, perubahan tema visual seluruh aplikasi di masa mendatang dapat dilakukan dengan cepat hanya melalui satu file konfigurasi saja tanpa berisiko merusak logika bisnis inti.
+
+## 2. Daftar Properti Tambahan Visual dan Alasan Pemilihan
+Untuk meningkatkan kualitas antarmuka dan pengalaman pengguna (UX), berikut adalah dua properti tambahan yang disematkan ke dalam kartu komponen GUI:
+
+* **Restriksi Akses Karakter Pemula (`setEnabled(false)`)**
+  * *Alasan:* Properti ini dipilih untuk memberikan indikasi visual yang kuat terhadap status kesiapan karakter. Karakter berlevel 1 dianggap sebagai entitas pemula (*trainee*) yang belum memiliki kapabilitas bertarung, sehingga komponen visualnya sengaja dinonaktifkan untuk menyimulasikan pembatasan akses interaksi dalam sistem permainan.
+* **Mekanisme Informasi Melayang (`Dynamic HTML Tooltip`)**
+  * *Alasan:* Properti ini diimplementasikan untuk mempertahankan estetika jendela aplikasi agar tetap bersih, minimalis, dan ringkas. Rincian status sekunder yang padat seperti daya tahan (`hitPoints`) dan daya serang (`attackPower`) dipindahkan ke dalam *hover tooltip* berformat HTML sehingga pengguna tetap dapat meninjau statistik mendalam tanpa membuat tata letak utama menjadi penuh sesak.
+
+## Screenshot Output (sebelum vs sesudah)
+### Sebelum
+![Screenshot AP13 Sebelum](./Bukti_Ap_13_sebelum.png)
+### Sesudah
+![Screenshot AP13 Sesudah](./Bukti_Ap_13_sesudah.png)
+
+
 ## Identitas Mahasiswa
 
 Nama: Jeremia Prananta Ginting
 NIM : 253303621201
 Link Google Docs ap3 :
+
 Link Google Docs ap6 :
+
 Link Google Docs ap10:https://docs.google.com/document/d/1jHux_H1N2GJDQ0PjGE_Viuxbh4arjsCe6VSF1TeBf5g/edit?usp=sharing
+
+Link Google Docs ap13 :https://docs.google.com/document/d/1522bXuf7yOsX-QCsWwyEu4iOyNAfk8nZphUZzhaPkmo/edit?usp=sharing
