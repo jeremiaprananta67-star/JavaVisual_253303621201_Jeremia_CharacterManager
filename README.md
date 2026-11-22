@@ -17,17 +17,23 @@ CharacterMaager_/
 │           └── charactermanager/
 │               │── model/
 │               │   ├── Character.java
-│               │   │── CharacterType.java
+│               │   ├── CharacterType.java
 │               │   └── CharacterManager.java
 │               └── view/
-│                   │── AppThema.java
-│                   └── MainWindow.java                  
+│                   ├── AppThema.java
+│                   ├── CharacterFormPanel.java 
+│                   └── MainWindow.java 
 │              
 ├── Bukti_Ap_3.png
 │── Bukti_Ap_6.png
 ├── Bukti_Ap_10.png
 ├── Bukti_Ap_13_sebelum.png
 ├── Bukti_Ap_13_sebelum.png
+├── Ukuran_Awal.png
+├── Dilebarkan.png
+├── Minimized.png
+├── Bukti_Ap_19sebelum.png
+├── Bukti_Ap_19sesudah.png
 └── README.md
 
 ## AP6 - Fitur Baru: Pencarian Karakter Terkuat (findStrongest)
@@ -114,6 +120,36 @@ Berikut adalah analisis komparatif antara prediksi teoritis tata letak layout da
 3. Jendela Dikecilkan (Minimized / Vertikal Scrollbar Aktif):
    ![Jendela Dikecilkan](./Minimized.png)
 
+### AP19 — Form Input Karakter dan Validasi Data
+
+AP19 mengembangkan aplikasi Character Manager dari GUI yang hanya menampilkan data menjadi aplikasi yang dapat menerima karakter baru melalui form. Perubahan ini membagi tanggung jawab antara Model dan View: Model menjaga aturan data, sedangkan View membaca input, memberi umpan balik, dan memperbarui tampilan.
+
+## 1.Validasi pada Model
+
+Konstruktor utama `Character` memeriksa bahwa nama tidak null atau kosong, role sudah dipilih, dan level berada pada rentang 1–99. Input yang melanggar aturan akan menghasilkan `IllegalArgumentException`. Pemeriksaan ini menjaga data tetap valid meskipun karakter dibuat dari jalur selain form.
+
+`CharacterManager.isNameTaken(String name)` memeriksa seluruh karakter untuk menemukan nama yang sama tanpa membedakan huruf besar dan kecil. Dengan demikian, nama seperti “Arjuna” dan “arjuna” dianggap duplikat.
+
+## 2.Form Tambah Karakter
+
+`CharacterFormPanel` menjadi panel input di sisi kiri jendela. Form menyediakan kolom nama, pilihan role dari `CharacterType`, spinner level 1–99, tombol Simpan, serta label pesan. Sebelum data dikirim ke Model, nama dibersihkan dengan `trim()` dan divalidasi: nama wajib diisi, panjangnya 3–20 karakter, hanya berisi huruf dan spasi, serta belum digunakan.
+
+Jika input tidak valid, form menampilkan pesan error dan menandai field terkait. Jika penyimpanan berhasil, form mengosongkan input, menampilkan pesan sukses, lalu menjalankan callback agar jendela memperbarui daftar karakter.
+
+Warna pesan diletakkan di palet tema `AppThema`: `ERROR` memakai `#ff7675` dan `SUCCESS` memakai `#55efc4`. Warna terang tersebut membantu pesan tetap terbaca pada latar gelap.
+
+## 3.Pembaruan Daftar di MainWindow
+
+`MainWindow` menerima `CharacterManager`, bukan salinan daftar karakter, sehingga dapat menampilkan data terbaru. Method `refreshList()` menghapus kartu lama, membangun ulang kartu berdasarkan `manager.getAllCharacters()`, lalu memanggil `revalidate()` dan `repaint()` agar perubahan langsung terlihat tanpa perlu mengubah ukuran jendela. Jumlah karakter pada header dan status bar turut diperbarui.
+
+`Main.java` menginisialisasi delapan karakter contoh dan menyerahkan objek manager ke `MainWindow`. Tangkapan layar aplikasi menunjukkan form, daftar karakter, jumlah karakter, serta legenda role dalam satu jendela.
+
+## Screenshot Output (sebelum vs sesudah)
+### Sebelum
+![Screenshot AP19 sebelum perubahan](./Bukti_Ap_19sebelum.png)
+
+### Sesudah
+![Screenshot AP19 sesudah perubahan](./Bukti_Ap_19sesudah.png)
 
 ## Identitas Mahasiswa
 
@@ -121,10 +157,12 @@ Nama: Jeremia Prananta Ginting
 NIM : 253303621201
 Link Google Docs ap3 :
 
-Link Google Docs ap6 :
+Link Google Docs ap6 :https://docs.google.com/document/d/1Cd-EYuwQBSSSKyTJX4qKIe_Vqr5HxqP2Vj4LV-leuz8/edit?usp=sharing
 
 Link Google Docs ap10:https://docs.google.com/document/d/1jHux_H1N2GJDQ0PjGE_Viuxbh4arjsCe6VSF1TeBf5g/edit?usp=sharing
 
 Link Google Docs ap13 :https://docs.google.com/document/d/1522bXuf7yOsX-QCsWwyEu4iOyNAfk8nZphUZzhaPkmo/edit?usp=sharing
 
 Link Google Docs ap16 : https://docs.google.com/document/d/1dmA4oND4ZB_ZYgq7E0PeEOuvnm7fgDexVQ0pTH3da1c/edit?usp=sharing
+
+Link Google Docs ap19 :https://docs.google.com/document/d/1WG1b-n9OncdcibUzfsu2Si_pydB1Za2c6iCaSOy31QI/edit?usp=sharing

@@ -1,204 +1,155 @@
 package com.unpri.charactermanager.view;
 
-import com.unpri.charactermanager.model.Character;
-import com.unpri.charactermanager.model.CharacterManager;
-import com.unpri.charactermanager.model.CharacterType;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import com.unpri.charactermanager.model.Character;
+import com.unpri.charactermanager.model.CharacterManager;
+import com.unpri.charactermanager.model.CharacterType;
 
 public class MainWindow extends JFrame {
 
-    private final ArrayList<Character> characterList;
-    private final CharacterManager manager; // Diperlukan untuk mengambil data statistik dinamis
+    private final CharacterManager manager;   // v0.6: menerima MANAGER, bukan salinan list
+    private JPanel cardsPanel;                // field: isinya diganti setiap refresh
+    private JLabel countLabel;                // field: jumlah di header
+    private JLabel statusLabel;               // field: teks di bar status
 
     public MainWindow(CharacterManager manager) {
-        super("Character Manager v0.5");
+        super("Character Manager v0.6");
         this.manager = manager;
-        this.characterList = manager.getAllCharacters();
 
         initComponents();
 
         pack();
-        setMinimumSize(new Dimension(700, 450)); // Dimensi disesuaikan agar panel statistik muat ideal
+        setMinimumSize(new Dimension(820, 420));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }
 
     private void initComponents() {
+        getContentPane().setBackground(AppThema.BG_MAIN);
         setLayout(new BorderLayout());
 
-        // 1. NORTH: Menggabungkan Header Label dan Panel Statistik Baru
-        JPanel northContainer = new JPanel(new BorderLayout());
-        northContainer.setBackground(AppThema.BG_MAIN);
-        northContainer.add(createHeaderLabelPanel(), BorderLayout.NORTH);
-        northContainer.add(createStatsPanel(), BorderLayout.SOUTH); // Panel Baru Berbasis GridLayout 2x2
-        add(northContainer, BorderLayout.NORTH);
-
-        // 2. CENTER: Daftar Berscroll (JScrollPane berisi panel kartu)
-        add(createScrollableListPanel(), BorderLayout.CENTER);
-
-        // 3. EAST: Legenda Panel (BoxLayout Y_AXIS)
+        add(createHeaderPanel(), BorderLayout.NORTH);
+        add(new CharacterFormPanel(manager, this::refreshList), BorderLayout.WEST); // form baru
+        add(createListArea(),    BorderLayout.CENTER);
         add(createLegendPanel(), BorderLayout.EAST);
+        add(createStatusPanel(), BorderLayout.SOUTH);
 
-        // 4. SOUTH: Status Bar (Teks kiri dan versi kanan)
-        add(createStatusBarPanel(), BorderLayout.SOUTH);
+        refreshList();                        // isi daftar untuk pertama kali
     }
 
-    // ===== REGION NORTH COMPONENT: HEADER LABEL =====
-    private JPanel createHeaderLabelPanel() {
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(AppThema.BG_MAIN);
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(16, 16, 4, 16));
-
-        JLabel lblTitle = new JLabel("Daftar Karakter (" + characterList.size() + ")", SwingConstants.CENTER);
-        lblTitle.setFont(AppThema.FONT_TITLE);
-        lblTitle.setForeground(AppThema.TEXT_MAIN);
-
-        headerPanel.add(lblTitle, BorderLayout.CENTER);
-        return headerPanel;
-    }
-
-    // ===== [PANEL BARU] REGION NORTH COMPONENT: STATS PANEL (GRIDLAYOUT 2x2) =====
-    private JPanel createStatsPanel() {
-        JPanel statsPanel = new JPanel(new GridLayout(2, 2, 8, 6));
-        statsPanel.setBackground(AppThema.BG_STATUS);
-        statsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(8, 16, 8, 16),
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(AppThema.TEXT_MUTED), "Rangkuman Statistik", 0, 0, AppThema.FONT_LEGENDA, AppThema.TEXT_MAIN)
-        ));
-
-        // Format data statistik dari CharacterManager
-        String avgLevel = String.format("%.2f", manager.getAverageLevel());
-        Character strongest = manager.findStrongest();
-        String strongestName = (strongest != null) ? strongest.getName() + " (Atk: " + strongest.getAttackPower() + ")" : "-";
-
-        // Buat 4 grid item
-        statsPanel.add(createStatLabel(" Total Karakter: " + characterList.size()));
-        statsPanel.add(createStatLabel(" Rata-rata Level: " + avgLevel));
-        statsPanel.add(createStatLabel(" Karakter Terkuat: " + strongestName));
-        statsPanel.add(createStatLabel(" Status Logika: Aman (100% OOP)"));
-
-        return statsPanel;
-    }
-
-    private JLabel createStatLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(AppThema.FONT_BODY);
-        lbl.setForeground(AppThema.TEXT_LIGHT);
-        return lbl;
-    }
-
-    // ===== REGION CENTER: SCROLLABLE LIST =====
-    private JScrollPane createScrollableListPanel() {
-        JPanel cardPanel = new JPanel(new GridLayout(0, 1, 0, 8));
-        cardPanel.setBackground(AppThema.BG_MAIN);
-        cardPanel.setBorder(BorderFactory.createEmptyBorder(8, 16, 16, 16));
-
-        for (Character c : characterList) {
-            cardPanel.add(createCharacterLabel(c));
+    /** Membangun ulang kartu dari data Model dan memperbarui semua penghitung. */
+    private void refreshList() {
+        cardsPanel.removeAll();                                   // buang kartu lama
+        for (Character c : manager.getAllCharacters()) {
+            cardsPanel.add(createCharacterLabel(c));              // buat kartu dari data terbaru
         }
+        cardsPanel.revalidate();                                  // layout dihitung ulang
+        cardsPanel.repaint();                                     // gambar ulang
 
-        JScrollPane scrollPane = new JScrollPane(cardPanel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getVerticalScrollBar().setUnitIncrement(12);
-        scrollPane.setPreferredSize(new Dimension(380, 220)); // Terpasang sesuai kriteria
-
-        return scrollPane;
+        int total = manager.getTotalCharacters();
+        countLabel.setText(total + " karakter");
+        statusLabel.setText("Total: " + total + " karakter  |  Siap");
     }
 
-    // ===== REGION EAST: LEGENDA (BoxLayout Y_AXIS) =====
-    private JPanel createLegendPanel() {
-        JPanel legendPanel = new JPanel();
-        legendPanel.setLayout(new BoxLayout(legendPanel, BoxLayout.Y_AXIS));
-        legendPanel.setBackground(AppThema.BG_STATUS);
-        legendPanel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+    private JPanel createHeaderPanel() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(AppThema.BG_MAIN);
+        header.setBorder(BorderFactory.createEmptyBorder(16, 16, 8, 16));
 
-        JLabel titleLegend = new JLabel("LEGENDA ROLE");
-        titleLegend.setFont(AppThema.FONT_BODY_BOLD);
-        titleLegend.setForeground(AppThema.TEXT_MAIN);
-        titleLegend.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        legendPanel.add(titleLegend);
-        
-        legendPanel.add(Box.createVerticalStrut(12));
+        JLabel title = new JLabel("Character Manager");
+        title.setFont(AppThema.FONT_TITLE);
+        title.setForeground(AppThema.TEXT_MAIN);
 
-        for (CharacterType type : CharacterType.values()) {
-            JLabel lblRole = new JLabel(type.name());
-            lblRole.setFont(AppThema.FONT_LEGENDA);
-            lblRole.setForeground(AppThema.TEXT_LIGHT);
-            lblRole.setBackground(AppThema.colorFor(type));
-            lblRole.setOpaque(true);
-            lblRole.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-            lblRole.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-            lblRole.setToolTipText(AppThema.describe(type));
+        countLabel = new JLabel(" ");                             // teks diisi oleh refreshList()
+        countLabel.setFont(AppThema.FONT_BODY);
+        countLabel.setForeground(AppThema.GOLD);
 
-            legendPanel.add(lblRole);
-            legendPanel.add(Box.createVerticalStrut(6));
-        }
-
-        legendPanel.add(Box.createVerticalGlue());
-
-        return legendPanel;
+        header.add(title, BorderLayout.WEST);
+        header.add(countLabel, BorderLayout.EAST);
+        return header;
     }
 
-    // ===== REGION SOUTH: STATUS BAR (Mini-Challenge Selesai) =====
-    private JPanel createStatusBarPanel() {
-        JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.setBackground(AppThema.BG_STATUS);
-        statusBar.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+    private JScrollPane createListArea() {
+        cardsPanel = new JPanel(new GridLayout(0, 1, 0, 8));      // sekarang FIELD, bukan variabel lokal
+        cardsPanel.setBackground(AppThema.BG_MAIN);
 
-        // Teks di wilayah kiri (WEST)
-        JLabel lblStatusLeft = new JLabel("System Ready | Mode: Dark Theme | Database: Terhubung");
-        lblStatusLeft.setFont(AppThema.FONT_MONO);
-        lblStatusLeft.setForeground(AppThema.TEXT_MUTED);
+        JPanel holder = new JPanel(new BorderLayout());
+        holder.setBackground(AppThema.BG_MAIN);
+        holder.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        holder.add(cardsPanel, BorderLayout.NORTH);
 
-        // Teks versi di wilayah kanan (EAST)
-        JLabel lblStatusRight = new JLabel("v0.5");
-        lblStatusRight.setFont(AppThema.FONT_MONO);
-        lblStatusRight.setForeground(AppThema.TEXT_MUTED);
-
-        statusBar.add(lblStatusLeft, BorderLayout.WEST);
-        statusBar.add(lblStatusRight, BorderLayout.EAST);
-        return statusBar;
+        JScrollPane scroll = new JScrollPane(holder);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(AppThema.BG_MAIN);
+        scroll.setPreferredSize(new Dimension(420, 280));
+        return scroll;
     }
 
-    // ===== KARTU KARAKTER =====
+    /** Satu kartu karakter (sama seperti v0.4). */
     private JLabel createCharacterLabel(Character c) {
-        String info = String.format(" %s  |  %s  |  Level %d", c.getName(), c.getType(), c.getLevel());
+        String info = c.getName() + " | " + c.getType()
+                    + " | Lv." + c.getLevel()
+                    + " | HP:" + c.getHitPoints()
+                    + " | ATK:" + c.getAttackPower();
 
         JLabel lbl = new JLabel(info);
+        lbl.setFont(AppThema.FONT_BODY);
+        lbl.setForeground(AppThema.TEXT_LIGHT);
         lbl.setBackground(AppThema.colorFor(c.getType()));
-        lbl.setOpaque(true);
+        lbl.setOpaque(true);                                 // wajib agar background tampak
         lbl.setBorder(AppThema.CARD_BORDER);
-
-        if (c.getLevel() >= AppThema.HIGH_LEVEL_THRESHOLD) {
-            lbl.setForeground(AppThema.GOLD);
-            lbl.setFont(AppThema.FONT_BODY_BOLD);
-        } else {
-            lbl.setForeground(AppThema.TEXT_LIGHT);
-            lbl.setFont(AppThema.FONT_BODY);
-        }
-
-        if (c.getLevel() <= 1) {
-            lbl.setEnabled(false);
-        } else {
-            lbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        }
-
-        String tooltipText = String.format("<html><b>%s</b> (%s)<br/>%s<br/>[ HP: %d | ATK: %d | Mana: %d ]</html>",
-                c.getName(), c.getType(), AppThema.describe(c.getType()), c.getHitPoints(), c.getAttackPower(), c.getMana());
-        lbl.setToolTipText(tooltipText);
-
+        lbl.setToolTipText(AppThema.describe(c.getType()));
+        lbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return lbl;
+    }
+
+    /** EAST: legenda warna per role, ditumpuk vertikal dengan BoxLayout. */
+    private JPanel createLegendPanel() {
+        JPanel legend = new JPanel();
+        legend.setLayout(new BoxLayout(legend, BoxLayout.Y_AXIS)); // target = panel ini sendiri!
+        legend.setBackground(AppThema.BG_MAIN);
+        legend.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 16));
+
+        JLabel head = new JLabel("Legenda Role");
+        head.setFont(AppThema.FONT_BODY.deriveFont(java.awt.Font.BOLD)); // tebalkan tanpa tahu nama font
+        head.setForeground(AppThema.TEXT_MAIN);
+        legend.add(head);
+        legend.add(Box.createVerticalStrut(8));             // spasi tetap 8 px
+
+        for (CharacterType type : CharacterType.values()) {  // satu chip per role
+            JLabel chip = new JLabel(type.name());
+            chip.setOpaque(true);
+            chip.setBackground(AppThema.colorFor(type));
+            chip.setForeground(AppThema.TEXT_LIGHT);
+            chip.setFont(AppThema.FONT_MONO);
+            chip.setBorder(AppThema.CARD_BORDER);
+            chip.setToolTipText(AppThema.describe(type));
+            legend.add(chip);
+            legend.add(Box.createVerticalStrut(6));
+        }
+        legend.add(Box.createVerticalGlue());               // dorong semua ke atas
+        return legend;
+    }
+
+    private JPanel createStatusPanel() {
+        JPanel status = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 6));
+        status.setBackground(AppThema.BG_STATUS);
+
+        statusLabel = new JLabel(" ");                            // diisi oleh refreshList()
+        statusLabel.setFont(AppThema.FONT_MONO);
+        statusLabel.setForeground(AppThema.TEXT_MUTED);
+        status.add(statusLabel);
+        return status;
     }
 }

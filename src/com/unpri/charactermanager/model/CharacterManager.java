@@ -42,6 +42,16 @@ public class CharacterManager {
         return null;                                  // tidak ditemukan setelah seluruh list diperiksa
     }
 
+    /** Mengembalikan true jika sudah ada karakter bernama sama (tanpa membedakan huruf besar/kecil). */
+    public boolean isNameTaken(String name) {
+        for (Character c : getAllCharacters()) {
+            if (c.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Menghapus karakter dari list berdasarkan nama.
      * @return true jika berhasil dihapus, false jika tidak ditemukan

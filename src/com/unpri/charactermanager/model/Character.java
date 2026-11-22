@@ -19,6 +19,16 @@ public class Character {
     // ===== CONSTRUCTOR 1: untuk membuat karakter BARU =====
     // Dipakai saat user membuat karakter dari form (belum punya id dari database)
     public Character(String name, CharacterType type, int level) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Nama tidak boleh kosong");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Role wajib dipilih");
+        }
+        if (level < 1 || level > 99) {
+            throw new IllegalArgumentException("Level harus 1-99");
+        }
+
         this.name = name;              // "this" merujuk ke atribut milik object ini
         this.type = type;
         this.level = level;
